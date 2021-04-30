@@ -1,15 +1,16 @@
 function vessel = veres2vessel(filename, plot_flag)
-% VERES2VESSEL (MSS Hydro)
+% veres2vessel reads data from ShipX output files and store the data in vesselname.mat
+%   using the MSS vessel struture.
 %
-% vessel = veres2vessel(filename, disp_flag) reads data from the
-% ShipX (Veres) output files *.re1, *.re2, *.re7, *.re8, and *.hyd and
-% store the data in vesselname.mat using the MSS vessel struture. Examples:
+%   vessel = veres2vessel(filename, disp_flag) 
 %
-% >> veres2vessel('input') 
-% >> veres2vessel('input','1111') 
+%   Examples:
 %
-% where input are the Veres output data file name.
-% -------------------------------------------------------------------------
+%    veres2vessel('input') 
+%    veres2vessel('input','1111') 
+%
+% where input are the Shipx (Veres) output data file name.
+% 
 % Inputs:
 %   filename: *  (without extension) reads and processes the following
 %                 ShipX (Veres) files:                
@@ -24,7 +25,7 @@ function vessel = veres2vessel(filename, plot_flag)
 %                            '0001' plot wave drift forces
 %                            '0000' NO PLOT
 %                            '1111' PLOT ALL
-% -------------------------------------------------------------------------
+%
 % Outputs:
 % vessel contains data in the following form (saved to vesselname.mat):
 %
@@ -77,11 +78,9 @@ function vessel = veres2vessel(filename, plot_flag)
 % Date:      2005-05-10 
 % Revisions: 2008-02-15 Minor bug fixes
 %            2009-09-11 Using new viscous damping viscous.m
-%            2013-07-09 Fixed: MARINTEK coordinate origin not in CO
-% ________________________________________________________________
-%
-% MSS HYDRO is a Matlab toolbox for guidance, navigation and control.
-% The toolbox is part of the Marine Systems Simulator (MSS).
+%            2013-07-09 Fixed: SINTEF Ocean coordinate origin not in CO
+%            2021-03-0  Minor bug fixes
+
 %%
 if ~exist('plot_flag')
 	plot_flag = '1000';

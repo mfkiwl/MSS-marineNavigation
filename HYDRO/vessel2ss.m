@@ -1,37 +1,40 @@
 function vesselABC = vessel2ss(vessel)
-% VESSEL2SS (MSS Hydro)
+% vessel2ss computes the fluid memory transfer functions using SI.
 %
-% vesselABC = vessel2ss(vessel,order44,Bvflag) computes the
-% hydrodynamic coefficients, retardation function transfer functions using
-% SI. The vessel data structure must be generated using ShipX (VERES) or WAMIT. 
+%    vesselABC = vessel2ss(vessel) 
+% 
+% Only the potential coefficients A(w) and B(w) are used so viscous damping
+% Bv(w) = beta * exp(-alpha * w) should be added as a constant damping
+% matrix in the time domain, that is: Bv(0) = beta.
 %
-% Load or generate MSS vessel structure:
+% The vessel data structure 'vessel' must be generated using ShipX or WAMIT, 
+% and it need to be loaded to the workspace by: 
 %
-%   >>load('myship')                     - load vessel struture from myship.mat
-%   >>vessel = veres2vessel('s175')      - compute vessel structure    
-%   >>vessel = veres2vessel('supply')    - compute vessel structure 
-%   >>vessel = wamit2vessel('tanker')    - compute vessel structure 
+%   load('myship')                   
 %
-% Generate MSS fluid memory state-space model:
+% You can also generate the MSS vessel structure from hydrodynamic data. 
+% Examples are:
 %
-%   >>vesselABC = vessel2ss(vessel)
+%   vessel = veres2vessel('s175')       
+%   vessel = veres2vessel('supply')  
+%   vessel = wamit2vessel('tanker')  
+%
+% Next, compute the fluid memory state-space models:
+%
+%   vesselABC = vessel2ss(vessel)
 %
 % The computed data are stored in: *ABC.mat where * is equal to
-% vessel.main.name. The data file *ABC.mat is used by the Simulink templates
-%
-% Retardation functions and corresponding state-space models are computed
-% using potential coefficients with optional viscous damping terms B11v,
-% B22v, B44v and B66v. These are computed in viscous_skin.m.
+% vessel.main.name. The data file *ABC.mat is used by the Simulink templates.
 %
 % Inputs:
-% vessel      MSS vessel structure
+%   vessel      MSS vessel structure
 %
 % Outputs the structure vesselABC with
 %   G           = spring stiffness
 %   MRB         = rigid-body mass matrix
 %   MA          = zero frequency added mass matrix
 %   Minv        = inv(MRB+MA)
-%   Ar,Br,cr,Dr = zero speed state space models for fluid memory effect
+%   Ar,Br,cr,Dr = zero-speed state space models for fluid memory effect
 %   r_g         = [xg,yg,zg] vector from O to G        
 %
 % Author:     Thor I. Fossen
@@ -39,10 +42,7 @@ function vesselABC = vessel2ss(vessel)
 % Revisions:  2008-02-15  Minor bug fixes
 %             2009-09-10  Frequency-domain implementation of fluid
 %                         memory effects using the Matlab FDI tools  
-% _________________________________________________________________________
-%
-% MSS HYDRO is a Matlab toolbox for guidance, navigation and control.
-% The toolbox is part of the Marine Systems Simulator (MSS).
+
 %%
 close all
 
@@ -80,16 +80,16 @@ if vessel.freqs(end) == 10
 end
 
 % check the range of vessel.freqs
-if vessel.freqs(1)==0 & vessel.freqs(end)~=10
+if vessel.freqs(1)==0 && vessel.freqs(end)~=10
     error('The WAMIT frequencies must be defined such that: vessel.freqs(1:N)= [0 10] where 10 corresponds to the infinite frequency')
 end
-if vessel.freqs(end)==10 & vessel.freqs(1)~=0
+if vessel.freqs(end)==10 && vessel.freqs(1)~=0
     error('The WAMIT frequencies must be defined such that: vessel.freqs(1:N)= [0 10] where 10 corresponds to the infinite frequency')
 end
-if vessel.freqs(1)<0.1 & vessel.freqs(end)~=10
+if vessel.freqs(1)<0.1 && vessel.freqs(end)~=10
     error('The VERES frequencies must be defined such that: vessel.freqs(1:N)= [wmin wmax] where wmin > 0.1 and wmax < 10')
 end
-if vessel.freqs(1)<0 | vessel.freqs(end)>10
+if vessel.freqs(1)<0 || vessel.freqs(end)>10
     error('The frequencies must be defined such that: vessel.freqs(1:N)= [wmin wmax] where wmin >= 0 and wmax <= 10')
 end
 
@@ -127,7 +127,7 @@ else % VERES (only element 1,1, in surge, no coupling)
     idx_N = {1,2,4,6,3,5,4,6,5,6};
 end
     
-for i = 1:length(idx_M),
+for i = 1:length(idx_M)
     
     dof =[idx_M{i},idx_N{i}];   % 12 elements due to starboard-port symmetry
     
